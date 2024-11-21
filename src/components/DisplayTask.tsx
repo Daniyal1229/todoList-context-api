@@ -8,13 +8,19 @@ const DisplayTask = () => {
 
   const {tasks, toggleTask, updateTask, deleteTask} = useTodoContext();
   const [edited, setEdited] = useState<boolean>(false);
+  const [currentTodo,setCurrentTodo] = useState<{id:string,text:string}>({
+    id: '',
+    text: '',
+}) //? specifying what data we are going to store and data type to accept 
 
   const handleEdit = (id: string, text: string) => {
-    setEdited(true);
+    setEdited(!edited);
+    setCurrentTodo({id, text});
   }
 
   const handleSave = () => {
-    setEdited(false);
+    updateTask(currentTodo.id, currentTodo.text);
+    setEdited(!edited);
   }
 
 
@@ -27,9 +33,9 @@ const DisplayTask = () => {
                 tasks.map((todo) => (
                     <li key={todo.id}>
                         {
-                          edited ?
+                          edited && todo.id === currentTodo.id ?
                           <>
-                            <input type="text" value={todo.text} onChange={(e) => updateTask(todo.id, e.target.value)} /> 
+                            <input type="text" value={todo.text} onChange={(e) => setCurrentTodo({id: todo.id, text: e.target.value})} /> 
                             <button onClick={() => handleSave()}>save</button>
                           </>
                           
